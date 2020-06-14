@@ -49,17 +49,7 @@
       }
     },
     mounted () {
-      axios.get(`https://restcountries.eu/rest/v2/name/${this.$route.params.countryName}?fullText=true`)
-        .then(res=>{
-          this.country=res.data[0];
-          if(this.country.borders.length > 0){
-            var codeList = this.country.borders.join(';')
-            axios.get(`https://restcountries.eu/rest/v2/alpha?codes=${codeList}`)
-            .then(res=>{this.borders=res.data})
-            .catch(err=> console.log("error cargando borders: "+err))
-          }
-        })
-        .catch(err=>{console.log(err)})
+      this.getData()
     },
     computed: {
       currencies() {
@@ -81,6 +71,19 @@
       }
     },
     methods: {
+      getData(){
+        axios.get(`https://restcountries.eu/rest/v2/name/${this.$route.params.countryName}?fullText=true`)
+        .then(res=>{
+          this.country=res.data[0];
+          if(this.country.borders.length > 0){
+            var codeList = this.country.borders.join(';')
+            axios.get(`https://restcountries.eu/rest/v2/alpha?codes=${codeList}`)
+            .then(res=>{this.borders=res.data})
+            .catch(err=> console.log("error cargando borders: "+err))
+          }
+        })
+        .catch(err=>{console.log(err)})
+      },
       back() {
         this.$router.go(-1)
       },
@@ -89,7 +92,7 @@
           name: 'Detail',
           params: {countryName: countryName}
         })
-         this.$router.go(0)
+        this.getData()
       }
     },
   }
